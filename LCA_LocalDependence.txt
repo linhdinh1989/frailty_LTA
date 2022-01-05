@@ -1,3 +1,4 @@
+/*Latent GOLD syntax for LCA, relaxing local independence assumption*/
 /*Input: Cross-sectional data at each time point.*/
 options
    maxthreads=6;
