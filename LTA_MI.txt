@@ -1,0 +1,37 @@
+/*Latent GOLD syntax for Step 1 and 2 of LTA, assuming measurement invariance*/
+/*Input: All-wave data is presented in long-table format*/
+options
+   maxthreads=6;
+   algorithm 
+      tolerance=1e-008 emtolerance=0.01 emiterations=250 nriterations=50 ;
+   startvalues
+      seed=0 sets=50 tolerance=1e-005 iterations=200;
+   bayes
+      categorical=1 variances=1 latent=1 poisson=1;
+   montecarlo
+      seed=0 sets=0 replicates=500 tolerance=1e-008;
+   quadrature  nodes=10;
+   missing  includedependent;
+   output      
+      parameters=first  betaopts=wl standarderrors profile probmeans=posterior
+      loadings bivariateresiduals estimatedvalues=model reorderclasses;
+variables
+   dependent sph nominal, socialfunc nominal, cogfunc nominal, adl nominal,
+      iadl nominal, gali nominal, morbidity nominal, 
+      depress nominal;
+   latent
+      Cluster nominal 6 knownclass=survival(0: 0 0 1 1 1 1, 1: 1 0 0 0 0 0, 
+      2: 0 1 0 0 0 0); 
+      /*absorbing states modeled by specifying as known classes */
+equations
+   Cluster <- 1;
+   sph <- 1 + Cluster;
+   socialfunc <- 1 + Cluster;
+   cogfunc <- 1 + Cluster;
+   adl <- 1 + Cluster;
+   iadl <- 1 + Cluster;
+   gali <- 1 + Cluster;
+   morbidity <- 1 + Cluster;
+   depress <- 1 + Cluster;
+   cogfunc <-> socialfunc;
+   depress <-> cogfunc;

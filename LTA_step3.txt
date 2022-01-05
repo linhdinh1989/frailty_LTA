@@ -1,0 +1,27 @@
+/*Latent GOLD syntax for Step 3 of LTA, assuming a stationary Markov model*/
+/*Input: All-wave data is presented in long-table format*/
+options
+   maxthreads=6;
+   algorithm 
+      tolerance=1e-008 emtolerance=0.01 emiterations=250 nriterations=50 ;
+   startvalues
+      seed=0 sets=50 tolerance=1e-005 iterations=200;
+   bayes
+      categorical=1 variances=1 latent=1 poisson=1;
+   montecarlo
+      seed=0 sets=0 replicates=500 tolerance=1e-008;
+   quadrature  nodes=10;
+   missing  includeall;
+   output      
+      parameters=first standarderrors profile estimatedvalues=model;
+   step3 modal ml;
+variables
+   caseid id;
+   independent time nominal, age, gender;
+   latent
+      State dynamic nominal posterior = ( Cluster#1 Cluster#2 Cluster#3
+      Cluster#4 Cluster#5 Cluster#6 ) ;
+equations
+  State[=0] <- 1 + age + gender;
+  State <- (~tra) 1 | State[-1] + (~tra) time|State[-1] + (~tra) age|State[-1] 
+  + (~tra) gender|State[-1];
